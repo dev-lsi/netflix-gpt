@@ -72,9 +72,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 
 
-# NetflixGPT
-    -Create React App by command: npx create-react-app
-    -add and configure TailwindCSS in the app
+# NetflixGPT - Building the App Steps
+    -Initial Configurations  
+        -Create React App by command: npx create-react-app
+        -add and configure TailwindCSS in the app
+        -add router by npm i -D react-router-dom
 
 # Features of this App
 
@@ -92,5 +94,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
             - n Lists of horizontal scrolable lists by movie type
 
     -NetflixGPT Page
-        -Searc Bar
+        -Search Bar
         -Movie Suggestions        
