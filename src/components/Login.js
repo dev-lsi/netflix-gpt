@@ -1,62 +1,155 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Header from "./Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { validateInputData } from "../utils/validate";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-const Login =()=>{
-    
-    const [formName, setFormName] = useState("Sign In");
+import { auth } from "../utils/firebase";
 
-    const toggleForm = () => {
-        formName === "Sign In" ? setFormName("Sign Up"):setFormName("Sign In");
-    }
+const Login = () => {
+  const [formName, setFormName] = useState("Sign In");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
-    function getDisplayValue(){
-       return formName==="Sign In"? "none" : "block";
-    }
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+  //const checkbox = useRef(null);
+  //console.log(checkbox)
 
-    function toggleActions(){
-        return formName ==="Sign In"? signIn() : signUp();
-    }
+  const toggleForm = () => {
+    formName === "Sign In" ? setFormName("Sign Up") : setFormName("Sign In");
+  };
 
-    function signIn(){
-        console.log("Signed In Page");
-    }
-
-    function signUp(){
-        console.log("Sign Up Page");
-    }
-   
-    return <div className="">
-        <Header/>
-        <img className="" src="https://assets.nflxext.com/ffe/siteui/vlv3/9d3533b2-0e2b-40b2-95e0-ecd7979cc88b/a39b60f5-0445-42b3-ba28-76b0b79cc5ef/BG-en-20240311-popsignuptwoweeks-perspective_alpha_website_small.jpg" alt=""/>
+  const handleButtonClick = () => {
+    let message=null;
+    if(name){
+      message = validateInputData(
+        email.current.value,
+        password.current.value,
         
-        <form className=" text-white p-4 m-4 w-1/3 bg-slate-950 flex flex-col absolute mx-auto left-0 right-0 my-auto top-0 bottom-0 border-solid rounded-lg h-fit py-20 bg-opacity-80">
-            <h1 className="text-bold text-3xl px-4 py-1">{formName}</h1>
+      );
+    }else{
+      message = validateInputData(
+        email.current.value,
+        password.current.value,
+      );
 
-            {formName==="Sign Up"&&<input type="text " placeholder="Name" className="mx-4 my-3 px-1 py-3 rounded-lg w-11/12 bg-slate-700"/>}
+    }
+    
+    setErrorMessage(message);
+    if (message) return;
 
-            <input type="text" placeholder="Email" className="mx-4 my-3 px-1 py-3 rounded-lg w-11/12 bg-slate-700"/>
+    if (formName === "Sign Up") {
+      //Sign up logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + ": " + errorMessage);
+        });
+    } else if (formName === "Sign In") {
+      //Sign In logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + ": " + errorMessage);
+        });
+    }
+  };
 
-            <input type="password" placeholder="Password" className="mx-4 my-3 px-1 py-3 rounded-lg w-11/12 bg-slate-700"/>
+  return (
+    <div className="">
+      <Header />
+      <img
+        className=""
+        src="https://assets.nflxext.com/ffe/siteui/vlv3/9d3533b2-0e2b-40b2-95e0-ecd7979cc88b/a39b60f5-0445-42b3-ba28-76b0b79cc5ef/BG-en-20240311-popsignuptwoweeks-perspective_alpha_website_small.jpg"
+        alt=""
+      />
 
-            <button onClick={toggleActions} className="text-bold bg-red-700 w-11/12 py-2 mx-4 my-3 rounded-lg">{formName}</button>
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className=" text-white p-4 m-4 w-1/3 bg-slate-950 flex flex-col absolute mx-auto left-0 right-0 my-auto top-0 bottom-0 border-solid rounded-lg h-fit py-20 bg-opacity-80"
+      >
+        <h1 className="text-bold text-3xl px-4 py-1">{formName}</h1>
 
-            <h2 className="mx-auto">Forgot password?</h2>
-            <div className="flex">
-                <input type="checkbox" className="w-6"></input>
-                <span className="px-3 my-4 text-lg">Remember me!</span>
-            </div>
-            <div className="flex text-gray-400">
-                <h2 className="text-lg">{formName ==="Sign Up"?"Have an Account?":"New to NetFlix?"}</h2>
-                <p onClick={toggleForm} className=" px-4 hover:underline cursor-pointer text-white">{ formName === "Sign In"?"Sign Up Now!":"Sign In Here!"}</p>
-            </div>
-            <p className="text-gray-400 mt-8 text-sm mx-3">
-            This page is protected by Google reCAPTCHA to ensure you're not a bot. <Link className="text-blue-600 text-sm">Learn more.</Link>
-            </p>
-            
-        </form>
+        {formName === "Sign Up" && (
+          <input
+            ref={name}
+            type="text "
+            placeholder="Name"
+            className="mx-4 my-3 px-1 py-3 rounded-lg w-11/12 bg-slate-700"
+          />
+        )}
+
+        <input
+          ref={email}
+          type="text"
+          placeholder="Email"
+          className="mx-4 my-3 px-1 py-3 rounded-lg w-11/12 bg-slate-700"
+        />
+
+        <input
+          ref={password}
+          type="password"
+          placeholder="Password"
+          className="mx-4 my-3 px-1 py-3 rounded-lg w-11/12 bg-slate-700"
+        />
+
+        <p className="text-red-500 h-4 mb-2">{errorMessage}</p>
+
+        <button
+          onClick={handleButtonClick}
+          className="text-bold bg-red-700 w-11/12 py-2 mx-4 my-3 rounded-lg"
+        >
+          {formName}
+        </button>
+
+        <h2 className="mx-auto">Forgot password?</h2>
+        <div className="flex">
+          <input type="checkbox" className="w-6"></input>
+          <span className="px-3 my-4 text-lg">Remember me!</span>
+        </div>
+        <div className="flex text-gray-400">
+          <h2 className="text-lg">
+            {formName === "Sign Up" ? "Have an Account?" : "New to NetFlix?"}
+          </h2>
+          <p
+            onClick={toggleForm}
+            className=" px-4 hover:underline cursor-pointer text-white"
+          >
+            {formName === "Sign In" ? "Sign Up Now!" : "Sign In Here!"}
+          </p>
+        </div>
+        <p className="text-gray-400 mt-8 text-sm mx-3">
+          This page is protected by Google reCAPTCHA to ensure you're not a bot.{" "}
+          <Link className="text-blue-600 text-sm">Learn more.</Link>
+        </p>
+      </form>
     </div>
-}
+  );
+};
 
 export default Login;
-

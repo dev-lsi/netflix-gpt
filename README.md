@@ -77,6 +77,22 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
         -Create React App by command: npx create-react-app
         -add and configure TailwindCSS in the app
         -add router by npm i -D react-router-dom
+    -Create Header with Logo
+    -Create SignIn/SignUp form
+    -Form Validations 
+        -(can use 'Formix' library but here we do it from scratch)
+        - useRef Hook
+    -Firebase Setup Commands in order:
+        - npm install -g firebase-tools
+        - firebase-login
+        - firebase-init
+        - npm run build (public folder name must be "build")
+        - firebase deploy
+    -Next...Install Redux Commands
+        - npm i -D @reduxjs/toolkit
+        - npm i react-redux
+
+        -createStore-createSlice-addSliceToStore-ProvideStoreToApp
 
 # Features of this App
 
