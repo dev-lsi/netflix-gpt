@@ -2,3 +2,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.form{
+    width: 450px;
+}
+
+@media (max-width:600px) {
+    .form{
+        width: 100%;
+    }
+}
+
+.form-input{
+   
+    
+}
+
+.check-box{
+    height: 20px;
+    width: 20px;
+    background-color: black;
+}
+
+.check-box:checked{
+    background-color: gray;
+}
+
+
+
