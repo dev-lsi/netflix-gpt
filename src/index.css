@@ -27,6 +27,11 @@
 .check-box:checked{
     background-color: gray;
 }
+.back{
+    object-fit: cover;
+    width:100dvw;
+    height:150dvh ;
+}
 
 
 
