@@ -13,9 +13,9 @@ const Login=()=>{
   return (
     <div>
         <Header/>
-        <img className=" h-lvh" src={backgroundURL} alt="bkg"/>
+        <img className=" h-lvh w-full" src={backgroundURL} alt="bkg"/>
         <form
-         className=" py-10 form absolute flex flex-col flex-wrap z-10  top-28 mx-auto left-0  right-0  gap-8 px-16 bg-black bg-opacity-80  justify-center text-white">
+         className=" py-10 form absolute flex flex-col flex-wrap z-10 top-20 mx-auto left-0  right-0  gap-8 px-16 bg-black bg-opacity-80  justify-center text-white">
           <h1 className="font-bold text-4xl">{isSignInForm?"Sign In":"Sign Up"}</h1>
 
           {!isSignInForm && (
