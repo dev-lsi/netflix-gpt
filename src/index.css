@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('./nomalize.css');
+
+:root{
+    
+}
+
+*,html,input,button,form,p,a,ul,li,a,div {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  color:  var(--color);
+}
+
+h1{
+  font-size: 3.5em;
+}
+
+h2 {
+  font-size: 2.8em;
+ 
+}
+h3 {
+  font-size: 2.4em;
+ 
+}
+h4 {
+  font-size: 1.9em;
+ 
+}
+h5 {
+  font-size: 1.6em;
+ 
+}
+h6 {
+  font-size: 1.25em;
+}
+
+p,a,ul li a,form,input,button {
+  font-size: 1em;
+}
+
+
