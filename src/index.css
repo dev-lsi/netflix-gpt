@@ -7,11 +7,11 @@
     
 }
 
-*,html,input,button,form,p,a,ul,li,a,div {
+*,html,input,button,form,p,a,ul,li,a,div,h1,h2,h3,h4,h5,h6 {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  color:  var(--color);
+  color:  #FFFFFF;
 }
 
 h1{
@@ -41,5 +41,51 @@ h6 {
 p,a,ul li a,form,input,button {
   font-size: 1em;
 }
+
+input{
+  font-size: 1em;
+  min-height: 3.4em;
+  min-width: 200px;
+  padding-left: 1em;
+  font-weight: 400;
+  background-color: rgba(44, 44, 61, 0.8);
+  backdrop-filter:opacity(10%) blur(2px);
+  border:1px solid green;
+  border-radius: 4px;
+}
+input:focus{
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+button{
+  background-color: rgb(229,9,20);
+  border-radius: 0.2em;
+  min-width: fit-content;
+  min-height: 2.2em;
+  text-wrap: nowrap;
+}
+button:hover{
+  background-color: rgb(183, 6, 15);
+}
+
+
+form{
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 1em;
+  padding: 4em;
+  width: 450px;
+  border-radius: 0.2em;
+  border:1px solid rgba(0,0,0,0.2);
+  backdrop-filter: brightness(28%);
+  background-color: rgba(0,0,0,0.5);
+}
+form>*{
+  flex-basis: 100%;
+}
+
+
 
 

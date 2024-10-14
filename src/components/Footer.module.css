@@ -1,0 +1,27 @@
+.footer{
+    flex-basis: 100%;
+    display:flex;
+    justify-content: center;
+    column-gap: 2em;
+    min-height: 20em;
+    padding-top: 12em;
+    padding-bottom: 4em;
+    background-color: black;
+}
+
+.footer-section{
+    display:flex;
+    flex-wrap: wrap;
+    row-gap: 1em;
+    max-height: fit-content;
+    padding: 1em;
+}
+.footer-section>*{
+    flex-basis: 100%;
+}
+
+.footer-section a{
+   font-size: 0.9em;
+   color:rgba(255, 255, 255, 0.7);
+   text-decoration: underline;
+}
