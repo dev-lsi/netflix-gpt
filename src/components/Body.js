@@ -1,9 +1,11 @@
 import Browse from "./Browse";
 import Home from "./Home";
 import Login from "./Login";
+import ResetPassword from "./ResetPassword";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const Body = () => {
+  
   const router = createBrowserRouter([
     {
       path: "/",
@@ -16,6 +18,10 @@ const Body = () => {
     {
       path: "/browse",
       element: <Browse />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
     },
   ]);
 

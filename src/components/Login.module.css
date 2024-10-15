@@ -1,3 +1,10 @@
+.hidden{
+    display:none;
+}
+.visible{
+    display:block;
+}
+
 .login{
     background-image: url("../assets/mock-bg-login-page-large.jpg");
     object-fit: cover;

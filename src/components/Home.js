@@ -11,7 +11,7 @@ const Home = () => {
            <div className={s["headers-container"]}>
               <div className={s["headings"]}>
                 <h1>Unlimited movies, TV shows, and more</h1>
-                <h6>Starts at EUR 4.99. Cancel anytime.</h6>
+                <h6>Starts at EUR ✉. Cancel anytime.</h6>
                 <p>Ready to watch? Enter your email to create or restart your membership.</p>
               </div>
               <div className={s["controls"]}>
