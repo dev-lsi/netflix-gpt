@@ -5,6 +5,8 @@ import Header from "./Header";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { validateInputs } from "../utils/validate";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 
 const Login = () => {
 
@@ -14,57 +16,72 @@ const Login = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPassValid, setIsPassValid] = useState(false);
   const [isRepassValid, setIsRepassValid] = useState(false);
-  
+
   const name = useRef(null);
   const email = useRef(null);
   const pass = useRef(null);
   const repass = useRef(null);
-  
-  function handleSubmit() {
-      console.log(name)
-      console.log(email)
-      console.log(pass)
-      console.log(repass)
 
-      validateInputs(isSignInForm,setValidatorData, setIsNameValid, setIsEmailValid, setIsPassValid, setIsRepassValid, name,email,pass,repass);
-      console.log(validatorData)
-      if(Object.keys(validatorData).length===0){
-        submitForm(validatorData);
-      }
-  
+  function handleSubmit() {
+    console.log(name)
+    console.log(email)
+    console.log(pass)
+    console.log(repass)
+
+    validateInputs(isSignInForm, setValidatorData, setIsNameValid, setIsEmailValid, setIsPassValid, setIsRepassValid, name, email, pass, repass);
+    console.log(validatorData)
+    if (Object.keys(validatorData).length === 0) {
+      
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, email.current.value, pass.current.value)
+        .then((userCredential) => {
+          // Signed up 
+          const user = userCredential.user;
+          console.log(user)
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode+": "+errorMessage)
+          // ..
+        });
+      submitForm(validatorData);
+    }
+
   }
 
 
   function submitForm(validatoData) {
     console.log("Form Data Submitted");
     console.log(validatorData)
-   
+
   }
 
   return (
     <div className={s["login"]}>
       <Header />
       <div className={s["login-layout"]}>
-        <form onSubmit={(e)=>e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <h4>{isSignInForm ? "Sign In" : "Sign Up"}</h4>
 
           {
-            !isSignInForm && <input ref={name} className={s["form-input"]} type="text" placeholder="Name" name="name" />
+            !isSignInForm &&
+            <input ref={name} className={s["form-input"] + " basis-[100%]"} type="text" placeholder="Name" name="name" />
           }
-          <p className=" text-[0.9em] text-red-500">{!validatorData.name ? "*" : validatorData.name}</p>
+          <p className=" text-[0.9em] text-red-500 mt-[-1em]">{!validatorData.name ? "*" : validatorData.name}</p>
+
 
           <input ref={email} className={s["form-input"]} type="text" placeholder="Email" name="email" />
-          <p className=" text-[0.9em] text-red-500">{!validatorData.email ? "*" : validatorData.email}</p>
+          <p className=" text-[0.9em] text-red-500 mt-[-1em]">{!validatorData.email ? "*" : validatorData.email}</p>
 
           <input ref={pass} className={s["form-input"]} type="password" placeholder="Password" name="pass" />
-          <p className=" text-[0.9em] text-red-500">{!validatorData.pass ? "*" : validatorData.pass}</p>
+          <p className=" text-[0.9em] text-red-500 mt-[-1em]">{!validatorData.pass ? "*" : validatorData.pass}</p>
 
           {
-            !isSignInForm && <div>
-              <input ref={repass} className={s["form-input"]} type="password" placeholder="Repeat Password" name="repass" />
-    <p className=" text-[0.9em] text-red-500">{!validatorData.repass ? "*" : validatorData.repass}</p>
-            </div>
+            !isSignInForm &&
+            <input ref={repass} className={s["form-input"]} type="password" placeholder="Repeat Password" name="repass" />
           }
+          <p className=" text-[0.9em] text-red-500 mt-[-1em]">{!validatorData.repass ? "*" : validatorData.repass}</p>
 
           <button onClick={handleSubmit}>
             {isSignInForm ? "Sign In" : "Sign Up"}
