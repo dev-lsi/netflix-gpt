@@ -5,10 +5,16 @@ import Header from "./Header";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { validateInputs } from "../utils/validate";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useSelector, useDispatch } from 'react-redux'
+import { addUser, deleteUser } from "../utils/userSlice"
 
 
 const Login = () => {
+
+  const userRedux = useSelector((state)=>state.user)
+  const dispatch=useDispatch();
 
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [validatorData, setValidatorData] = useState({});
@@ -31,39 +37,49 @@ const Login = () => {
     validateInputs(isSignInForm, setValidatorData, setIsNameValid, setIsEmailValid, setIsPassValid, setIsRepassValid, name, email, pass, repass);
     console.log(validatorData)
     if (Object.keys(validatorData).length === 0) {
-      
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email.current.value, pass.current.value)
-        .then((userCredential) => {
-          // Signed up 
-          const user = userCredential.user;
-          console.log(user)
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode+": "+errorMessage)
-          // ..
-        });
-      submitForm(validatorData);
+      if (!isSignInForm) {
+        //Sign Up
+        createUserWithEmailAndPassword(auth, email.current.value, pass.current.value)
+          .then((userCredential) => {
+            // Signed up 
+            const user = userCredential.user;
+            console.log(user)
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode + ": " + errorMessage)
+            // ..
+          });
+      } else {
+        //Sign In............
+        signInWithEmailAndPassword(auth, email.current.value, pass.current.value)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user);
+           
+           
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode + ": " + errorMessage)
+          });
+      }
     }
-
-  }
-
-
-  function submitForm(validatoData) {
-    console.log("Form Data Submitted");
-    console.log(validatorData)
-
   }
 
   return (
     <div className={s["login"]}>
       <Header />
       <div className={s["login-layout"]}>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <h4>{isSignInForm ? "Sign In" : "Sign Up"}</h4>
+        
 
+        <form onSubmit={(e) => e.preventDefault()}>
+          <h2>{!userRedux?"Default user":userRedux.uid}</h2>
+          <h4>{isSignInForm ? "Sign In" : "Sign Up"}</h4>
           {
             !isSignInForm &&
             <input ref={name} className={s["form-input"] + " basis-[100%]"} type="text" placeholder="Name" name="name" />
@@ -102,6 +118,7 @@ const Login = () => {
               {isSignInForm ? "Sign up now." : "Sign in now."}
             </span>
           </p>
+
 
           <p className={s["capcha"]}>This page is protected by Google reCAPTCHA to ensure you're not a bot. <span>Learn more.</span></p>
         </form>
