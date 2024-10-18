@@ -2,19 +2,20 @@ import React from "react"
 import s from "./Login.module.css";
 import Footer from "./Footer";
 import Header from "./Header";
-import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useRef} from "react";
+import { Link,useNavigate} from "react-router-dom";
 import { validateInputs } from "../utils/validate";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useSelector, useDispatch } from 'react-redux'
-import { addUser, deleteUser } from "../utils/userSlice"
+import { useSelector, useDispatch } from 'react-redux';
+import { addUser, deleteUser } from "../utils/userSlice";
 
 
 const Login = () => {
 
   const userRedux = useSelector((state)=>state.user)
   const dispatch=useDispatch();
+  const navigate=useNavigate();
 
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [validatorData, setValidatorData] = useState({});
@@ -22,11 +23,13 @@ const Login = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPassValid, setIsPassValid] = useState(false);
   const [isRepassValid, setIsRepassValid] = useState(false);
+  const [errorInfo,setErrorInfo]=useState("");
 
   const name = useRef(null);
   const email = useRef(null);
   const pass = useRef(null);
   const repass = useRef(null);
+  const errorElement = useRef(null);
 
   function handleSubmit() {
     console.log(name)
@@ -43,12 +46,13 @@ const Login = () => {
           .then((userCredential) => {
             // Signed up 
             const user = userCredential.user;
-            console.log(user)
+            const {uid,email,displayName,accessToken} = user;
+            dispatch(addUser({uid,email,displayName,accessToken}))
+            navigate('/browse')
+            
           })
           .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode + ": " + errorMessage)
+            setErrorInfo(error.message)
             // ..
           });
       } else {
@@ -56,16 +60,14 @@ const Login = () => {
         signInWithEmailAndPassword(auth, email.current.value, pass.current.value)
           .then((userCredential) => {
             // Signed in 
-            const user = userCredential.user;
-            console.log(user);
-           
+            const {uid,email,displayName,accessToken} = userCredential.user;
+            dispatch(addUser({uid,email,displayName,accessToken}))
+            navigate('/browse');
            
             // ...
           })
           .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode + ": " + errorMessage)
+            setErrorInfo(error.message);
           });
       }
     }
@@ -78,7 +80,6 @@ const Login = () => {
         
 
         <form onSubmit={(e) => e.preventDefault()}>
-          <h2>{!userRedux?"Default user":userRedux.uid}</h2>
           <h4>{isSignInForm ? "Sign In" : "Sign Up"}</h4>
           {
             !isSignInForm &&
@@ -102,6 +103,12 @@ const Login = () => {
           <button onClick={handleSubmit}>
             {isSignInForm ? "Sign In" : "Sign Up"}
           </button>
+          <p 
+            ref={errorElement} 
+            className=" text-[0.9em] text-red-500 mt-[-1em]"
+          >
+            {errorInfo}
+          </p>
 
           <h6 className={s["or"]}>OR</h6>
 
