@@ -8,7 +8,7 @@ import { validateInputs } from "../utils/validate";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useSelector, useDispatch } from 'react-redux';
-import { addUser, deleteUser } from "../utils/userSlice";
+import { addUser, removeUser } from "../utils/userSlice";
 
 
 const Login = () => {
@@ -32,39 +32,25 @@ const Login = () => {
   const errorElement = useRef(null);
 
   function handleSubmit() {
-    console.log(name)
-    console.log(email)
-    console.log(pass)
-    console.log(repass)
+    
 
     validateInputs(isSignInForm, setValidatorData, setIsNameValid, setIsEmailValid, setIsPassValid, setIsRepassValid, name, email, pass, repass);
-    console.log(validatorData)
+    
     if (Object.keys(validatorData).length === 0) {
       if (!isSignInForm) {
         //Sign Up
         createUserWithEmailAndPassword(auth, email.current.value, pass.current.value)
           .then((userCredential) => {
-            // Signed up 
-            const user = userCredential.user;
-            const {uid,email,displayName,accessToken} = user;
-            dispatch(addUser({uid,email,displayName,accessToken}))
-            navigate('/browse')
-            
+            // Signed Up is managed by onAuthStateChanged in App.js
           })
           .catch((error) => {
-            setErrorInfo(error.message)
-            // ..
+            setErrorInfo(error.message);
           });
       } else {
         //Sign In............
         signInWithEmailAndPassword(auth, email.current.value, pass.current.value)
           .then((userCredential) => {
-            // Signed in 
-            const {uid,email,displayName,accessToken} = userCredential.user;
-            dispatch(addUser({uid,email,displayName,accessToken}))
-            navigate('/browse');
-           
-            // ...
+            // Signed In is managed by onAuthStateChanged in App.js
           })
           .catch((error) => {
             setErrorInfo(error.message);
